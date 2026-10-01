@@ -24,4 +24,9 @@ public class CartaoEntity {
     private BandeiraCartao bandeira;
 
     private LocalDateTime dataCadastro;
+
+    @PrePersist
+    public void prePersist() {
+        setDataCadastro(LocalDateTime.now());
+    }
 }
