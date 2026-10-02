@@ -1,5 +1,6 @@
 package dev.felipeazsantos.planeja.infra.handlers;
 
+import dev.felipeazsantos.planeja.common.exceptions.NotFoundException;
 import dev.felipeazsantos.planeja.common.exceptions.ValidationException;
 import dev.felipeazsantos.planeja.common.validation.CampoInvalido;
 import org.springframework.http.HttpStatus;
@@ -43,5 +44,17 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(status).body(body);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleNotFoundException(NotFoundException e) {
+        var body = Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", HttpStatus.NOT_FOUND.value(),
+                "error", e.getMessage(),
+                "message", e.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 }
