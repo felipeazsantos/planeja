@@ -1,5 +1,6 @@
 package dev.felipeazsantos.planeja.dominio.cartao;
 
+import dev.felipeazsantos.planeja.common.exceptions.ValidationException;
 import dev.felipeazsantos.planeja.dominio.cartao.dto.CartaoDetalhes;
 import dev.felipeazsantos.planeja.dominio.cartao.dto.CartaoForm;
 import dev.felipeazsantos.planeja.dominio.cartao.mapper.CartaoMapper;
@@ -20,7 +21,11 @@ public class CartaoService {
     private CartaoMapper mapper;
 
     public CartaoDetalhes criar(CartaoForm form) {
-        validator.validar(form);
+        var result = validator.validar(form);
+        if (result.isInvalido()) {
+            throw new ValidationException(result.getCampoInvalidos());
+        }
+
         CartaoEntity entity = mapper.toEntity(form);
         repository.save(entity);
         return mapper.toDetalhes(entity);
