@@ -18,8 +18,8 @@ public class CartaoController {
     private CartaoService service;
 
     @PostMapping
-    public ResponseEntity<CartaoDetalhes> criar(@RequestBody @Valid CartaoForm novo) {
-        var detalhes = service.criar(novo);
+    public ResponseEntity<CartaoDetalhes> criar(@RequestBody @Valid CartaoForm form) {
+        var detalhes = service.criar(form);
         return ResponseEntity.status(HttpStatus.CREATED).body(detalhes);
     }
 
@@ -27,6 +27,12 @@ public class CartaoController {
     public ResponseEntity<CartaoDetalhes> obterDetalhes(@PathVariable UUID id) {
         var result = service.obterDetalhes(id);
         return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Void> atualizar(@PathVariable UUID id, @RequestBody CartaoForm form) {
+        service.atualizar(id, form);
+        return ResponseEntity.noContent().build();
     }
 
 

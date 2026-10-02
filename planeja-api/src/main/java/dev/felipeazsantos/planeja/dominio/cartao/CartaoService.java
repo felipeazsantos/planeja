@@ -24,11 +24,7 @@ public class CartaoService {
     private CartaoMapper mapper;
 
     public CartaoDetalhes criar(CartaoForm form) {
-        var result = validator.validar(form);
-        if (result.isInvalido()) {
-            throw new ValidationException(result.getCampoInvalidos());
-        }
-
+        validarDadosCartao(form, null);
         CartaoEntity entity = mapper.toEntity(form);
         repository.save(entity);
         return mapper.toDetalhes(entity);
@@ -41,5 +37,21 @@ public class CartaoService {
                 .orElseThrow(() -> new NotFoundException());
 
         return cartaoDetalhes;
+    }
+
+    public void atualizar(UUID id, CartaoForm form) {
+        var entity = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException());
+
+        validarDadosCartao(form, id);
+        mapper.update(entity, form);
+        repository.save(entity);
+    }
+
+    private void validarDadosCartao(CartaoForm form, UUID id) {
+        var result = validator.validar(form, id);
+        if (result.isInvalido()) {
+            throw new ValidationException(result.getCampoInvalidos());
+        }
     }
 }
